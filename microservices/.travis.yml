@@ -1,0 +1,22 @@
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t liamniou/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run -e CI=true liamniou/react-test npm test
+
+after_success:
+  - docker build -t liamnou/multi-client ./client
+  - docker build -t liamnou/multi-nginx ./nginx
+  - docker build -t liamnou/multi-server ./server
+  - docker build -t liamnou/multi-worker ./worker
+  # Log in to the docker CLI
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  # Push images to docker hub
+  - docker push liamnou/multi-client
+  - docker push liamnou/multi-nginx
+  - docker push liamnou/multi-server
+  - docker push liamnou/multi-worker
