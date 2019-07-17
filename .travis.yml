@@ -20,3 +20,17 @@ after_success:
   - docker push liamnou/multi-nginx
   - docker push liamnou/multi-server
   - docker push liamnou/multi-worker
+
+deploy:
+  provider: elasticbeanstalk
+  region: eu-west-1
+  app: multi-docker
+  env: MultiDocker-env-1
+  bucket_name: elasticbeanstalk-eu-west-1-294975559783
+  buckett_path: docker-multi
+  on:
+    branch: microservices
+  access_key_id:
+    secure: $AWS_ACCESS_KEY_PROD
+  secret_access_key:
+    secure: $AWS_SECRET_KEY_PROD
